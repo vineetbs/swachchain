@@ -1,15 +1,21 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import RouterSafeLink from '@/components/RouterSafeLink';
 import { Home } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { AuthContext } from "@/context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const NotFound = () => {
+  const { auth } = useContext(AuthContext);
+  if(!auth.isSignedIn){
+    return <Navigate to="/" />
+  }
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoggedIn={auth.isSignedIn} />
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="container max-w-md text-center">
           <h1 className="text-7xl font-bold text-primary mb-4">404</h1>
