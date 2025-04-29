@@ -32,7 +32,7 @@ const initialCities = [
 ];
 
 const Leaderboard = () => {
-  const { auth, logout } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   if (!auth.isSignedIn) {
     return <Navigate to="/" />;
   }
@@ -56,7 +56,7 @@ const Leaderboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoggedIn={auth.isSignedIn} />
       <main className="flex-1 py-12">
         <div className="container">
           <h1 className="text-3xl font-bold mb-2 text-center">
