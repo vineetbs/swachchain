@@ -107,7 +107,7 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoggedIn={auth.isSignedIn} />
       <main className="flex-1 py-12">
         <div className="container">
           {/* User Summary */}
