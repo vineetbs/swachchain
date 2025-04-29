@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import RouterSafeLink from "@/components/RouterSafeLink";
 import { Camera, Trophy, ArrowRight } from "lucide-react";
 import StepCard from "@/components/StepCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import AuthForm from "@/components/AuthForm";
+import { AuthContext } from "@/context/AuthContext";
 
 const Index = () => {
+  const {auth} = useContext(AuthContext);
+
+  if (!auth.isSignedIn) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header isLoggedIn={auth.isSignedIn} />
+        <main className="flex-1 py-12">
+          <div className="container max-w-lg">
+            <AuthForm />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoggedIn={auth.isSignedIn} />
 
       {/* Hero Section */}
       <section className="hero-pattern py-16 md:py-24">
@@ -55,8 +72,6 @@ const Index = () => {
               steps
             </p>
           </div>
-
-          <div></div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <StepCard
