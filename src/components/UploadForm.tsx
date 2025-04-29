@@ -5,13 +5,11 @@ import { Camera, Upload, Map, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useLocation } from '@/hooks/useLocation';
-import axios from 'axios';
+import axiosApi from '@/lib/axios';
 
-interface UploadFormProps {
-  onSuccess: (result: { score: number, message: string }) => void;
-}
+interface UploadFormProps {}
 
-const UploadForm: React.FC<UploadFormProps> = ({ onSuccess }) => {
+const UploadForm: React.FC<UploadFormProps> = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -45,6 +43,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ onSuccess }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    
     e.preventDefault();
     
     if (!file) {
@@ -60,17 +59,16 @@ const UploadForm: React.FC<UploadFormProps> = ({ onSuccess }) => {
     setIsSubmitting(true);
 
     const formData = new FormData();
-    formData.append('photo', file);
+    formData.append('image', file);
     formData.append('city', city);
 
     try {
-      const response = await axios.post('/api/report', formData, {
+      const response = await axiosApi.post('/images/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
-      onSuccess(response.data);
+      console.log(response.data);
     } catch (error) {
       toast.error('Failed to upload report');
     } finally {
