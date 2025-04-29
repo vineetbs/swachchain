@@ -7,12 +7,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import RouterSafeLink from "@/components/RouterSafeLink";
 import { AuthContext } from "@/context/AuthContext";
-import { Navigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom"; // No longer needed if we remove the redirect
+
 const Upload = () => {
-  const { auth } = useContext(AuthContext);
-  if (!auth.isSignedIn) {
-    return <Navigate to="/" />;
-  }
+  // --- Authentication Check Temporarily Disabled ---
+  // const { auth } = useContext(AuthContext);
+  // if (!auth.isSignedIn) {
+  //   return <Navigate to="/" />;
+  // }
+  // --- End Disabled Section ---
+
+  // --- We still need auth for the Header, let's get it ---
+  // --- If you remove the auth check entirely, make sure Header handles isLoggedIn potentially being undefined ---
+  // --- Or provide a default value if AuthContext might not be ready ---
+  const authContext = useContext(AuthContext);
+  const isLoggedIn = authContext?.auth?.isSignedIn ?? false; // Safely access isSignedIn, default to false
 
   const [isUploaded, setIsUploaded] = useState(false);
   const [scoreResult, setScoreResult] = useState<{
@@ -32,7 +41,8 @@ const Upload = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header isLoggedIn={auth.isSignedIn} />
+      {/* Pass the safely accessed logged-in status to Header */}
+      <Header isLoggedIn={isLoggedIn} />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">
           <h1 className="text-3xl font-bold mb-6 text-center">
@@ -63,6 +73,7 @@ const Upload = () => {
                   </div>
                 </div>
               ) : (
+                // Pass any necessary props to UploadForm if it needs auth info
                 <UploadForm onSuccess={handleUploadSuccess} />
               )}
             </CardContent>
