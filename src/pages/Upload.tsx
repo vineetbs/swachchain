@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import UploadForm from '@/components/UploadForm';
@@ -7,8 +7,15 @@ import ScoreDisplay from '@/components/ScoreDisplay';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import RouterSafeLink from '@/components/RouterSafeLink';
+import { AuthContext } from '@/context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const Upload = () => {
+  const { auth, logout } = useContext(AuthContext);
+    if(!auth.isSignedIn){
+      return <Navigate to="/" />
+    }
+
   const [isUploaded, setIsUploaded] = useState(false);
   const [scoreResult, setScoreResult] = useState<{ score: number, message: string } | null>(null);
 
