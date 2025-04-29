@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CityCard from "@/components/CityCard";
@@ -12,24 +12,31 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowUp, ArrowDown } from "lucide-react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "@/context/AuthContext";
 
 // Mock data for cities
 const initialCities = [
-  { id: 1, name: "Bhopal", score: 9876, reports: 328, rank: 1 },
-  { id: 2, name: "Indore", score: 8765, reports: 287, rank: 2 },
-  { id: 3, name: "Ujjain", score: 7654, reports: 254, rank: 3 },
-  { id: 4, name: "Jabalpur", score: 6543, reports: 212, rank: 4 },
-  { id: 5, name: "Satna", score: 5432, reports: 187, rank: 5 },
-  { id: 6, name: "Rewa", score: 4321, reports: 165, rank: 6 },
-  { id: 7, name: "Sanchi", score: 3210, reports: 132, rank: 7 },
-  { id: 8, name: "Vidisha", score: 2109, reports: 98, rank: 8 },
-  { id: 9, name: "Itarshi", score: 1987, reports: 87, rank: 9 },
-  { id: 10, name: "Jhanshi", score: 1876, reports: 76, rank: 10 },
-  { id: 11, name: "Bhojpur", score: 1765, reports: 65, rank: 11 },
-  { id: 12, name: "Chindwara", score: 1654, reports: 54, rank: 12 },
+  { id: 1, name: "Tokyo", score: 9876, reports: 328, rank: 1 },
+  { id: 2, name: "London", score: 8765, reports: 287, rank: 2 },
+  { id: 3, name: "New York", score: 7654, reports: 254, rank: 3 },
+  { id: 4, name: "Paris", score: 6543, reports: 212, rank: 4 },
+  { id: 5, name: "Berlin", score: 5432, reports: 187, rank: 5 },
+  { id: 6, name: "Sydney", score: 4321, reports: 165, rank: 6 },
+  { id: 7, name: "Toronto", score: 3210, reports: 132, rank: 7 },
+  { id: 8, name: "Singapore", score: 2109, reports: 98, rank: 8 },
+  { id: 9, name: "Barcelona", score: 1987, reports: 87, rank: 9 },
+  { id: 10, name: "Amsterdam", score: 1876, reports: 76, rank: 10 },
+  { id: 11, name: "Hong Kong", score: 1765, reports: 65, rank: 11 },
+  { id: 12, name: "Seoul", score: 1654, reports: 54, rank: 12 },
 ];
 
 const Leaderboard = () => {
+  const { auth } = useContext(AuthContext);
+  if (!auth.isSignedIn) {
+    return <Navigate to="/" />;
+  }
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [timeFrame, setTimeFrame] = useState("all-time");
@@ -49,7 +56,7 @@ const Leaderboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoggedIn={auth.isSignedIn} />
       <main className="flex-1 py-12">
         <div className="container">
           <h1 className="text-3xl font-bold mb-2 text-center">

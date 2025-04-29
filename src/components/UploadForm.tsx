@@ -1,14 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Camera,
-  Upload,
-  Map,
-  Loader2,
-  XCircle,
-  CheckCircle,
-  FileImage,
-} from "lucide-react";
+import { Camera, Upload, Map, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useLocation } from "@/hooks/useLocation";
@@ -18,14 +10,7 @@ interface UploadFormProps {
   onSuccess: (result: { score: number; message: string }) => void;
 }
 
-interface ApiResponse {
-  area_name: string;
-  marks: number;
-  total_garbage_items: number;
-  garbage_coverage_percent: number;
-}
-
-const UploadForm: React.FC<UploadFormProps> = ({ onSuccess }) => {
+const UploadForm: React.FC<UploadFormProps> = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -214,45 +199,19 @@ const UploadForm: React.FC<UploadFormProps> = ({ onSuccess }) => {
 
     // Create FormData object (Browser's built-in)
     const formData = new FormData();
-    formData.append("image", file); // Key matches backend ('image')
-    formData.append("area_name", areaName); // Key matches backend ('area_name')
-
-    // --- HARDCODED API URL ---
-    const apiUrl = "https://41c5-106-221-210-77.ngrok-free.app/rate-image/";
-    // --- END HARDCODED URL ---
+    formData.append("photo", file);
+    formData.append("city", city);
 
     try {
-      console.log("Submitting FormData to:", apiUrl);
+      const response = await axios.post("/api/report", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      // Send the request using axios
-      // REMOVED the 'headers' option - Browser handles it automatically
-      const response = await axios.post<ApiResponse>(apiUrl, formData);
-
-      console.log("Backend Response Status:", response.status);
-      console.log("Backend Response Data:", response.data);
-
-      // Process the successful response (This part was already correct)
-      const result = response.data;
-      const successMessage = `Area "${result.area_name}" rated successfully. Score: ${result.marks}/10. Found ${result.total_garbage_items} items (${result.garbage_coverage_percent}% coverage).`;
-      onSuccess({ score: result.marks, message: successMessage });
-      toast.success("Report submitted successfully!");
-    } catch (error: any) {
-      // Handle errors (This part was already correct)
-      console.error("Upload failed:", error);
-      let errorMessage = "Failed to upload report.";
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Backend Error Status:", error.response.status);
-        console.error("Backend Error Data:", error.response.data);
-        errorMessage =
-          error.response.data?.detail ||
-          `Server error: ${error.response.status}`;
-      } else if (axios.isAxiosError(error) && error.request) {
-        errorMessage =
-          "No response from server. Check API URL and server status.";
-      } else {
-        errorMessage = error.message || errorMessage;
-      }
-      toast.error(errorMessage);
+      onSuccess(response.data);
+    } catch (error) {
+      toast.error("Failed to upload report");
     } finally {
       setIsSubmitting(false);
     }
